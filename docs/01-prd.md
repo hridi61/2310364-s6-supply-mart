@@ -217,3 +217,4 @@ Priorities are per release: a Beta "Must" is required for the final, not for the
 
 - The Beta is built on top of the MVP: the same `/api/v1/products` and `/api/v1/orders` resources stay. In the Beta the write endpoints require login and the right scope, and orders belong to a user.
 - Database migrations (Alembic) start at the beginning of the Beta, so the schema can grow from four tables to seven without manual SQL.
+- <!-- PRD documentation update -->
