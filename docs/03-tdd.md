@@ -597,3 +597,4 @@ Minimum for the Beta: login success and failure, and one `401`, one `403` and on
 | Code deployed before its migration ran (or the reverse) | Always run `alembic upgrade head` before merging a migration |
 | Permission bug exposes another user's data | All checks go through the dependencies in section 10.3 and the ownership rules in 10.4; review every new route against the SRS permission matrix; automated 401/403 tests |
 | JWT secret leaked | Only in Vercel environment variables; rotating it logs everyone out (acceptable) |
+| <!-- TDD documentation update --> |
