@@ -467,3 +467,4 @@ A scope says *what kind* of action is allowed. Ownership rules (own product, own
 | US-21 | FR-21 – FR-23 | `GET`, `PATCH /api/v1/users/me`, `POST /api/v1/users/me/password` | Beta |
 | US-22 | FR-38 | `GET /api/v1/dashboard` | Beta |
 | US-23 | FR-23, FR-39, NFR-13 – NFR-16 | `POST /api/v1/auth/login` | Beta |
+| <!-- SRS documentation update -->
