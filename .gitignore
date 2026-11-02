@@ -2,6 +2,7 @@
 __pycache__/
 .venv/
 *.pyc
+supply_mart.db
 
 # Node
 node_modules/

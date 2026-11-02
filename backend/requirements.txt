@@ -1,1 +1,5 @@
 fastapi[standard]>=0.141.1
+fastapi[standard]
+sqlmodel
+psycopg[binary]
+pytest
