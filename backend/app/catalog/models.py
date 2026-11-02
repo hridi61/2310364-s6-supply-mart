@@ -4,8 +4,8 @@ from sqlmodel import Field, SQLModel
 
 
 def utcnow() -> datetime:
-    """UTC সময়, tzinfo ছাড়া (SQLite ও PostgreSQL দুটোতেই একইভাবে জমা হয়)।"""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    """UTC সময়, timezone-সহ (SQLModel এভাবেই জমা রাখে)।"""
+    return datetime.now(timezone.utc)
 
 
 class Category(SQLModel, table=True):
