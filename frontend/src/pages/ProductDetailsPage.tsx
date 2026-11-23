@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Alert from "../components/Alert";
 import { ApiError, deleteProduct, getProduct, updateProduct } from "../services/api";
+import { useAuth } from "../auth/AuthContext";
 import type { Product } from "../types";
 import { UNIT_LABEL, formatDate, formatPrice, toBn } from "../utils/format";
 import NotFoundPage from "./NotFoundPage";
@@ -15,6 +16,8 @@ export default function ProductDetailsPage() {
   const productId = Number(id);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [stockInput, setStockInput] = useState("");
 
   const initialFlash = (location.state as { flash?: string } | null)?.flash ?? "";
   const [flash, setFlash] = useState(initialFlash);
@@ -41,7 +44,9 @@ export default function ProductDetailsPage() {
     setLoading(true);
     getProduct(productId)
       .then((result) => {
-        if (!cancelled) setProduct(result);
+        if (cancelled) return;
+        setProduct(result);
+        setStockInput(String(result.stock));
       })
       .catch((err) => {
         if (cancelled) return;
@@ -64,6 +69,19 @@ export default function ProductDetailsPage() {
       setProduct(updated);
       setError("");
       setFlash(updated.is_active ? "পণ্য চালু করা হয়েছে" : "পণ্য বন্ধ করা হয়েছে");
+    } catch (err) {
+      setFlash("");
+      setError(messageOf(err));
+    }
+  }
+
+  async function saveStock() {
+    if (!product) return;
+    try {
+      const updated = await updateProduct(product.id, { stock: Number(stockInput) });
+      setProduct(updated);
+      setError("");
+      setFlash("স্টক আপডেট হয়েছে");
     } catch (err) {
       setFlash("");
       setError(messageOf(err));
@@ -116,6 +134,16 @@ export default function ProductDetailsPage() {
               <dd>{product.is_active ? "চালু" : "বন্ধ"}</dd>
             </div>
             <div>
+              <dt>বিক্রেতা</dt>
+              <dd>{product.owner_name ?? "Supply Mart"}</dd>
+            </div>
+            {product.group_name && (
+              <div>
+                <dt>গ্রুপ</dt>
+                <dd>{product.group_name}</dd>
+              </div>
+            )}
+            <div>
               <dt>যোগ করা হয়েছে</dt>
               <dd>{formatDate(product.created_at)}</dd>
             </div>
@@ -125,17 +153,35 @@ export default function ProductDetailsPage() {
             </div>
           </dl>
 
+          {!user && <p className="muted">পণ্য বদলাতে <Link to="/login">লগইন</Link> করুন।</p>}
+
           <div className="actions">
-            <Link to={`/products/${product.id}/edit`} className="btn btn-primary">
-              সম্পাদনা
-            </Link>
-            <button type="button" className="btn" onClick={toggleActive}>
-              {product.is_active ? "বন্ধ করুন" : "চালু করুন"}
-            </button>
-            <button type="button" className="btn btn-danger" onClick={handleDelete}>
-              মুছুন
-            </button>
+            {product.can_edit && (
+              <>
+                <Link to={`/products/${product.id}/edit`} className="btn btn-primary">
+                  সম্পাদনা
+                </Link>
+                <button type="button" className="btn" onClick={toggleActive}>
+                  {product.is_active ? "বন্ধ করুন" : "চালু করুন"}
+                </button>
+              </>
+            )}
+            {product.can_delete && (
+              <button type="button" className="btn btn-danger" onClick={handleDelete}>
+                মুছুন
+              </button>
+            )}
           </div>
+
+          {product.can_stock && !product.can_edit && (
+            <div className="inline-form">
+              <label htmlFor="stock">স্টক বদলান (আপনার অনুমতি শুধু স্টকে)</label>
+              <input id="stock" type="number" min={0} value={stockInput} onChange={(e) => setStockInput(e.target.value)} />
+              <button type="button" className="btn btn-primary" onClick={saveStock}>
+                সংরক্ষণ
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

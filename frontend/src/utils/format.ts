@@ -27,3 +27,17 @@ export function formatDate(iso: string): string {
     timeZone: "Asia/Dhaka",
   }).format(new Date(iso));
 }
+
+// User-Agent থেকে ছোট নাম: "Chrome · Windows"
+export function shortAgent(ua: string | null): string {
+  if (!ua) return "অজানা";
+  const browser = /Edg\//.test(ua) ? "Edge" : /Chrome\//.test(ua) ? "Chrome" : /Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : "Browser";
+  const os = /Windows/.test(ua) ? "Windows" : /Android/.test(ua) ? "Android" : /iPhone|iPad/.test(ua) ? "iOS" : /Mac OS/.test(ua) ? "macOS" : /Linux/.test(ua) ? "Linux" : "";
+  return os ? `${browser} · ${os}` : browser;
+}
+
+export const PERM_LABEL: Record<string, string> = {
+  create: "পণ্য যোগ",
+  update: "পণ্য সম্পাদনা",
+  stock: "শুধু স্টক বদল",
+};

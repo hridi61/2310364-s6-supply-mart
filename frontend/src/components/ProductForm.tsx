@@ -11,6 +11,8 @@ interface ProductFormProps {
   submitLabel: string;
   serverErrors: Record<string, string>;
   cancelTo: string;
+  groups?: { id: number; name: string }[]; // শুধু নতুন পণ্যে: কোন গ্রুপে যোগ হবে
+  defaultGroupId?: string;
   onSubmit: (input: ProductInput) => void;
 }
 
@@ -22,6 +24,8 @@ export default function ProductForm({
   submitLabel,
   serverErrors,
   cancelTo,
+  groups = [],
+  defaultGroupId = "",
   onSubmit,
 }: ProductFormProps) {
   const [name, setName] = useState(initial?.name_bn ?? "");
@@ -30,6 +34,7 @@ export default function ProductForm({
   const [price, setPrice] = useState(initial ? String(initial.price) : "");
   const [stock, setStock] = useState(initial ? String(initial.stock) : "");
   const [icon, setIcon] = useState(initial?.icon ?? "");
+  const [groupId, setGroupId] = useState(defaultGroupId);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
   const errors = { ...serverErrors, ...clientErrors };
@@ -62,6 +67,7 @@ export default function ProductForm({
       price: Number(price),
       stock: Number(stock),
       icon: icon.trim() === "" ? null : icon.trim(),
+      ...(initial ? {} : { group_id: groupId ? Number(groupId) : null }),
     });
   }
 
@@ -141,6 +147,21 @@ export default function ProductForm({
           {errors.stock && <p className="error-text">{errors.stock}</p>}
         </div>
       </div>
+
+      {!initial && groups.length > 0 && (
+        <div className="field">
+          <label htmlFor="group_id">গ্রুপ (ঐচ্ছিক)</label>
+          <select id="group_id" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
+            <option value="">কোনো গ্রুপ না, শুধু আমার</option>
+            {groups.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
+            ))}
+          </select>
+          {errors.group_id && <p className="error-text">{errors.group_id}</p>}
+        </div>
+      )}
 
       <div className="actions">
         <button type="submit" className="btn btn-primary" disabled={submitting}>
