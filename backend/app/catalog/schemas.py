@@ -39,7 +39,7 @@ class ProductBase(SQLModel):
 
 
 class ProductCreate(ProductBase):
-    pass
+    group_id: int | None = None  # দিলে পণ্যটি ওই গ্রুপের (দোকান-টিমের) হবে
 
 
 class ProductUpdate(SQLModel):
@@ -83,6 +83,13 @@ class ProductRead(SQLModel):
     stock: int
     icon: str  # নিজের icon না থাকলে ক্যাটাগরির icon
     is_active: bool
+    owner_id: int | None = None
+    owner_name: str | None = None
+    group_id: int | None = None
+    group_name: str | None = None
+    can_edit: bool = False  # শুধু UI-র সুবিধার জন্য; আসল পরীক্ষা সার্ভারে হয়
+    can_delete: bool = False
+    can_stock: bool = False  # শুধু স্টক বদলানোর অধিকার
     created_at: datetime
     updated_at: datetime
 

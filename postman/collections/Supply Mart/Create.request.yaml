@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/api/v1/products"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name_bn\": \"পোস্টম্যান পণ্য\",\r
+
+    \  \"category_id\": 1,\r
+
+    \  \"unit\": \"kg\",\r
+
+    \  \"price\": 60,\r
+
+    \  \"stock\": 20\r
+
+    }"
+order: 5000

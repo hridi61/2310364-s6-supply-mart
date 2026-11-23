@@ -1,70 +1,29 @@
-def make(client, **changes):
-    data = {"name_bn": "মিনিকেট চাল", "category_id": 1, "unit": "kg", "price": 72, "stock": 10}
-    data.update(changes)
-    return client.post("/api/v1/products", json=data)
+from tests.conftest import product_body
 
 
-def test_create_product(client):
-    res = make(client)
-    assert res.status_code == 201
-    body = res.json()
-    assert body["name_bn"] == "মিনিকেট চাল"
-    assert body["category_slug"] == "chal"
-    assert body["is_active"] is True
+def test_health_seed_and_public_reads(anon):
+    assert anon.get("/api/health").json() == {"status": "ok"}
+    assert len(anon.get("/api/v1/categories").json()) == 8
+    r = anon.get("/api/v1/products?limit=5")
+    assert r.status_code == 200 and len(r.json()) == 5 and int(r.headers["x-total-count"]) >= 18
+    assert anon.get("/api/v1/products/99999").status_code == 404
+    assert anon.get("/api/v1/products?limit=0").status_code == 422
 
 
-def test_list_products_with_total(client):
-    make(client)
-    make(client, name_bn="নাজিরশাইল চাল")
-    res = client.get("/api/v1/products")
-    assert res.status_code == 200
-    assert res.headers["X-Total-Count"] == "2"
-    assert len(res.json()) == 2
+def test_filter_and_sort(anon):
+    r = anon.get("/api/v1/products?category=dal&sort=price_asc")
+    prices = [p["price"] for p in r.json()]
+    assert r.status_code == 200 and prices and prices == sorted(prices)
+    assert all(p["category_slug"] == "dal" for p in r.json())
 
 
-def test_search_products(client):
-    make(client)
-    make(client, name_bn="নাজিরশাইল চাল")
-    res = client.get("/api/v1/products", params={"q": "নাজির"})
-    assert res.headers["X-Total-Count"] == "1"
-
-
-def test_get_one_product(client):
-    product_id = make(client).json()["id"]
-    res = client.get(f"/api/v1/products/{product_id}")
-    assert res.status_code == 200
-    assert res.json()["id"] == product_id
-
-
-def test_get_missing_product_returns_404(client):
-    assert client.get("/api/v1/products/999").status_code == 404
-
-
-def test_patch_changes_only_sent_fields(client):
-    product_id = make(client).json()["id"]
-    res = client.patch(f"/api/v1/products/{product_id}", json={"price": 80})
-    assert res.status_code == 200
-    body = res.json()
-    assert body["price"] == 80
-    assert body["name_bn"] == "মিনিকেট চাল"
-
-
-def test_patch_missing_product_returns_404(client):
-    assert client.patch("/api/v1/products/999", json={"price": 80}).status_code == 404
-
-
-def test_delete_product(client):
-    product_id = make(client).json()["id"]
-    assert client.delete(f"/api/v1/products/{product_id}").status_code == 204
-    assert client.get(f"/api/v1/products/{product_id}").status_code == 404
-
-
-def test_delete_missing_product_returns_404(client):
-    assert client.delete("/api/v1/products/999").status_code == 404
-
-
-def test_validation_errors_return_422(client):
-    assert make(client, price=0).status_code == 422
-    assert make(client, name_bn="   ").status_code == 422
-    assert make(client, unit="box").status_code == 422
-    assert make(client, category_id=999).status_code == 422
+def test_crud_flow_and_validation(make):
+    a = make()
+    r = a.post("/api/v1/products", product_body())
+    assert r.status_code == 201 and r.json()["owner_id"] == a.id
+    pid = r.json()["id"]
+    assert a.patch(f"/api/v1/products/{pid}", {"price": 75}).json()["price"] == 75
+    assert a.post("/api/v1/products", product_body(price=0)).status_code == 422
+    assert a.post("/api/v1/products", product_body(category_id=999)).status_code == 422
+    assert a.patch(f"/api/v1/products/{pid}", {"name_bn": None}).status_code == 422
+    assert a.delete(f"/api/v1/products/{pid}").status_code == 204

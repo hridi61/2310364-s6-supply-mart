@@ -1,25 +1,58 @@
 import logging
+import os
+import sys
 from pathlib import Path
 
+# Vercel পুরো repo থেকে চালালেও `app` প্যাকেজ যেন পাওয়া যায়
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.admin.router import router as admin_router
+from app.auth.router import router as auth_router
 from app.catalog.router import router as catalog_router
+from app.config import settings
+from app.groups.router import router as groups_router
 
 logger = logging.getLogger("supply_mart")
 
 # vercel.json /api/* এই backend-এ পাঠায়, তাই docs-ও /api/docs-এ রাখা হয়েছে
 app = FastAPI(
     title="Supply Mart API",
-    description="মুদির পণ্য ও ক্যাটাগরির REST API (MVP)",
-    version="0.1.0",
+    description="Supply Mart: JWT auth, RBAC, গ্রুপ-অনুমতি ও অ্যাডমিন ড্যাশবোর্ডসহ REST API",
+    version="0.2.0",
     docs_url="/api/docs",
     openapi_url="/api/openapi.json",
     redoc_url=None,
 )
 
+# CORS: শুধু আমাদের frontend-এর origin (কোনো `*` নেই)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
+    expose_headers=["X-Total-Count", "Content-Disposition"],
+)
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    return response
+
+
+app.include_router(auth_router)
 app.include_router(catalog_router)
+app.include_router(groups_router)
+app.include_router(admin_router)
 
 
 @app.get("/api/health", tags=["system"])

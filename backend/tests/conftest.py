@@ -1,30 +1,89 @@
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.pool import StaticPool
-from sqlmodel import Session, SQLModel, create_engine
+import itertools
+import os
+import tempfile
 
-from app.catalog.models import Category
-from app.database import get_session
-from main import app
+# প্রতিটি টেস্ট রান আলাদা ডেটাবেস ফাইল ব্যবহার করে, আসল ডেটায় হাত পড়ে না
+os.environ["DATABASE_URL"] = f"sqlite:///{tempfile.mkdtemp()}/test.db"
+os.environ.pop("VERCEL", None)
+os.environ["REUSE_GRACE_SECONDS"] = "0"  # টেস্টে reuse সাথে সাথে ধরা পড়ুক
+
+import jwt  # noqa: E402
+import pytest  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+from sqlmodel import Session, select  # noqa: E402
+
+from app.auth.models import User  # noqa: E402
+from app.config import settings  # noqa: E402
+from app.database import engine  # noqa: E402
+from main import app  # noqa: E402
+
+PASSWORD = "Passw0rd123"
+_counter = itertools.count(1)
 
 
-@pytest.fixture(name="client")
-def client_fixture():
-    engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
-    SQLModel.metadata.create_all(engine)
-    with Session(engine) as session:
-        session.add(Category(slug="chal", name_bn="চাল", icon="🍚"))
-        session.commit()
+class Actor:
+    """একজন লগইন করা ব্যবহারকারী, নিজের আলাদা cookie সহ।"""
 
-    def override_session():
-        with Session(engine) as session:
-            yield session
+    def __init__(self, role: str = "user"):
+        self.client = TestClient(app)
+        self.email = f"user{next(_counter)}@test.com"
+        r = self.client.post("/api/v1/auth/signup", json={"email": self.email, "name": "Test User", "password": PASSWORD})
+        assert r.status_code == 201, r.text
+        self.id = r.json()["id"]
+        if role == "admin":
+            with Session(engine) as s:
+                u = s.get(User, self.id)
+                u.role = "admin"
+                s.add(u)
+                s.commit()
+        self.login()
 
-    app.dependency_overrides[get_session] = override_session
-    with TestClient(app) as client:
-        yield client
-    app.dependency_overrides.clear()
+    def login(self):
+        r = self.client.post("/api/v1/auth/login", json={"email": self.email, "password": PASSWORD})
+        assert r.status_code == 200, r.text
+        self.token = r.json()["access_token"]
+        return r
+
+    @property
+    def h(self):
+        return {"Authorization": f"Bearer {self.token}"}
+
+    def get(self, url, **kw):
+        return self.client.get(url, headers=self.h, **kw)
+
+    def post(self, url, json=None, **kw):
+        return self.client.post(url, json=json, headers=self.h, **kw)
+
+    def patch(self, url, json=None, **kw):
+        return self.client.patch(url, json=json, headers=self.h, **kw)
+
+    def delete(self, url, **kw):
+        return self.client.delete(url, headers=self.h, **kw)
+
+
+@pytest.fixture
+def make():
+    return Actor
+
+
+@pytest.fixture
+def anon():
+    return TestClient(app)
+
+
+def product_body(**over):
+    body = {"name_bn": "টেস্ট পণ্য", "category_id": 1, "unit": "kg", "price": 50, "stock": 5}
+    body.update(over)
+    return body
+
+
+def forged_token(user_id: int, secret: str | None = None, minutes: int = 15) -> str:
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
+    return jwt.encode({"sub": str(user_id), "role": "admin", "iat": now, "exp": now + timedelta(minutes=minutes)},
+                      secret or settings.jwt_secret, algorithm="HS256")
+
+
+def user_row(user_id: int) -> User:
+    with Session(engine) as s:
+        return s.exec(select(User).where(User.id == user_id)).one()

@@ -1,0 +1,7 @@
+$kind: http-request
+url: "   {{baseUrl}}/api/v1/products?offset=0&limit=8"
+method: GET
+queryParams:
+  offset: "0"
+  limit: "8"
+order: 2000
