@@ -37,10 +37,15 @@ def init_db() -> None:
         if _ready:
             return
         # models import না করলে SQLModel টেবিলগুলো চেনে না
+        from app.audit import models as _audit  # noqa: F401
+        from app.auth import models as _auth  # noqa: F401
         from app.catalog import models  # noqa: F401
+        from app.groups import models as _groups  # noqa: F401
+        from app.migrate import ensure_columns
         from app.seed import seed_if_empty
 
         SQLModel.metadata.create_all(engine)
+        ensure_columns(engine)
         with Session(engine) as session:
             seed_if_empty(session)
         _ready = True

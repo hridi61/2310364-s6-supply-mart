@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{baseUrl}}/api/v1/products/25"
+method: PATCH
+body:
+  type: json
+  content: "{\r\n  \"price\": 80\r\n}"
+order: 6000

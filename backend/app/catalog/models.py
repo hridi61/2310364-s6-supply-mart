@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel
 
 
 def utcnow() -> datetime:
-    """UTC সময়, timezone-সহ (SQLModel এভাবেই জমা রাখে)।"""
+    """UTC সময় (timezone সহ; নতুন SQLModel timezone ছাড়া datetime নেয় না)।"""
     return datetime.now(timezone.utc)
 
 
@@ -28,5 +28,7 @@ class Product(SQLModel, table=True):
     stock: int = 0
     icon: str | None = Field(default=None, max_length=8)
     is_active: bool = True
+    owner_id: int | None = Field(default=None, foreign_key="app_user.id", index=True)  # null = প্ল্যাটফর্মের নিজের পণ্য
+    group_id: int | None = Field(default=None, foreign_key="shop_group.id", index=True)
     created_at: datetime = Field(default_factory=utcnow)
     updated_at: datetime = Field(default_factory=utcnow)
