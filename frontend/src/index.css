@@ -389,3 +389,82 @@ select:focus {
     flex-direction: column;
   }
 }
+
+/* ---------- final: auth, groups, admin ---------- */
+.narrow { max-width: 28rem; margin: 0 auto; }
+.small { font-size: 0.85rem; }
+.top { margin-top: 1rem; align-items: start; }
+.section { margin-top: 2rem; }
+.stack { display: grid; gap: 0.75rem; }
+.push { margin-left: auto; }
+.nav-user { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+.nav-user a { font-weight: 500; }
+.who { font-weight: 500; }
+.badge-bad { background: #fde8e8; color: var(--danger); }
+.group-card { display: grid; gap: 0.25rem; color: inherit; }
+.group-card:hover { text-decoration: none; border-color: var(--brand); }
+.perms { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.perm { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; }
+.inline-form { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.card.inline-form { padding: 0.75rem 1rem; margin-bottom: 1rem; }
+.inline-form input { flex: 1 1 14rem; padding: 0.5rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.subnav { display: flex; flex-wrap: wrap; gap: 0.25rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.subnav a, .subnav button { padding: 0.5rem 0.9rem; border: 0; background: none; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
+.subnav a.active, .subnav button.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+.subnav a:hover { text-decoration: none; color: var(--ink); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.75rem; }
+.stat { display: grid; gap: 0.15rem; padding: 1rem; }
+.stat-num { font-size: 1.9rem; font-weight: 700; color: var(--brand); line-height: 1.1; }
+.stat-warn .stat-num { color: var(--danger); }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.75rem 0; }
+ul.plain { margin: 0; padding-left: 1.2rem; }
+
+/* ---------- হোম পেজ, ক্যাটাগরি, footer ---------- */
+.nav { flex-wrap: wrap; }
+.hm-hero { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 1rem; background: var(--brand-soft); border-radius: 20px; padding: 2rem 2.25rem; }
+.hm-hero-tag { display: inline-block; margin: 0 0 0.75rem; padding: 0.2rem 0.8rem; border-radius: 999px; background: #fff; color: var(--brand); font-size: 0.85rem; font-weight: 500; }
+.hm-hero h1 { margin: 0 0 0.75rem; font-size: 2.3rem; line-height: 1.3; }
+.hm-hero-accent { color: var(--brand); }
+.hm-hero-sub { margin: 0 0 1.25rem; color: var(--muted); max-width: 34rem; }
+.hm-hero-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.hm-hero-art { justify-self: center; max-width: 100%; height: auto; }
+.hm-btn { display: inline-block; padding: 0.6rem 1.3rem; border: 1.5px solid var(--brand); border-radius: 999px; color: var(--brand); font-weight: 500; background: #fff; }
+.hm-btn:hover { text-decoration: none; background: var(--brand-soft); }
+.hm-btn-solid { background: var(--brand); color: #fff; }
+.hm-btn-solid:hover { background: #bf155f; }
+.hm-section { margin-top: 2.25rem; }
+.hm-section-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
+.hm-section-head h2 { margin: 0; }
+.hm-cats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 0.9rem; }
+.hm-cat { display: grid; justify-items: center; gap: 0.45rem; padding: 0.9rem 0.4rem; background: var(--card); border: 1px solid var(--line); border-radius: 16px; color: var(--ink); font-weight: 500; font-size: 0.92rem; text-align: center; }
+.hm-cat:hover { text-decoration: none; border-color: var(--brand); }
+.hm-cat-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--brand-soft); font-size: 1.7rem; }
+.hm-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.hm-pill { padding: 0.3rem 0.9rem; border: 0; border-radius: 999px; background: #ececef; color: var(--ink); font: inherit; font-size: 0.88rem; cursor: pointer; }
+.hm-pill.on { background: var(--brand); color: #fff; }
+.hm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1rem; }
+.hm-tile { display: grid; align-content: start; gap: 0.2rem; padding: 1rem; background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+.hm-tile-out { opacity: 0.7; }
+.hm-tile-art { display: grid; place-items: center; height: 96px; margin-bottom: 0.5rem; background: var(--brand-soft); border-radius: 12px; font-size: 3rem; }
+.hm-tile-cat { margin: 0; color: var(--muted); font-size: 0.82rem; }
+.hm-tile-name { margin: 0; font-size: 1.02rem; }
+.hm-tile-price { margin: 0.2rem 0 0; font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+.hm-tile-price span { font-size: 0.82rem; font-weight: 400; color: var(--muted); }
+.hm-stock { margin: 0; font-size: 0.82rem; color: var(--ok); }
+.hm-stock-out { color: var(--danger); }
+.hm-tile-btn { margin-top: 0.7rem; padding: 0.5rem; border: 1.5px solid var(--brand); border-radius: 999px; color: var(--brand); text-align: center; font-weight: 500; font-size: 0.92rem; }
+.hm-tile-btn:hover { text-decoration: none; background: var(--brand-soft); }
+.hm-more { text-align: center; margin: 1.5rem 0 0; }
+.hm-footer { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.4fr; gap: 1.5rem; padding-top: 2rem; padding-bottom: 1.25rem; text-align: left; }
+.hm-footer h3 { margin: 0 0 0.6rem; font-size: 0.95rem; }
+.hm-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; font-size: 0.9rem; }
+.hm-footer p { margin: 0; font-size: 0.9rem; }
+.hm-footer a { color: var(--ink); }
+.hm-footer-brand { font-weight: 600; font-size: 1.05rem !important; margin-bottom: 0.4rem !important; color: var(--brand); }
+.hm-copy { padding-bottom: 1.25rem; font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 0.9rem; }
+@media (max-width: 760px) {
+  .hm-hero { grid-template-columns: 1fr; padding: 1.5rem 1.25rem; }
+  .hm-hero h1 { font-size: 1.75rem; }
+  .hm-hero-art { max-width: 180px; order: -1; }
+  .hm-footer { grid-template-columns: 1fr 1fr; }
+}

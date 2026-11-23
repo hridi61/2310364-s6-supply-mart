@@ -3,8 +3,8 @@ import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Alert from "../components/Alert";
 import Pagination from "../components/Pagination";
-import { ApiError, deleteProduct, listCategories, listProducts } from "../services/api";
-import type { Category, Product, ProductPage, SortOption } from "../types";
+import { ApiError, listCategories, listProducts } from "../services/api";
+import type { Category, ProductPage, SortOption } from "../types";
 import { UNIT_LABEL, formatPrice, toBn } from "../utils/format";
 
 const PAGE_SIZE = 8;
@@ -25,13 +25,12 @@ export default function ProductListPage() {
   const page = Math.max(1, Number(params.get("page") ?? 1) || 1);
 
   const initialFlash = (location.state as { flash?: string } | null)?.flash ?? "";
-  const [flash, setFlash] = useState(initialFlash);
+  const [flash] = useState(initialFlash);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [data, setData] = useState<ProductPage>({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState(q);
-  const [reloadKey, setReloadKey] = useState(0);
 
   // অন্য পেজ থেকে আসা সফলতার বার্তা একবার দেখানোর পর history থেকে সরিয়ে দিই
   useEffect(() => {
@@ -66,7 +65,7 @@ export default function ProductListPage() {
     return () => {
       cancelled = true;
     };
-  }, [category, q, sort, page, reloadKey]);
+  }, [category, q, sort, page]);
 
   function updateParams(changes: Record<string, string>) {
     const next = new URLSearchParams(params);
@@ -80,21 +79,6 @@ export default function ProductListPage() {
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     updateParams({ q: searchText.trim(), page: "" });
-  }
-
-  async function handleDelete(product: Product) {
-    if (!window.confirm(`"${product.name_bn}" মুছে ফেলবেন?`)) return;
-    try {
-      await deleteProduct(product.id);
-      setError("");
-      setFlash(`"${product.name_bn}" মুছে ফেলা হয়েছে`);
-      // শেষ পৃষ্ঠার একমাত্র পণ্য মুছলে আগের পৃষ্ঠায় যাই
-      if (data.items.length === 1 && page > 1) updateParams({ page: String(page - 1) });
-      else setReloadKey((k) => k + 1);
-    } catch (err) {
-      setFlash("");
-      setError(messageOf(err));
-    }
   }
 
   return (
@@ -168,6 +152,7 @@ export default function ProductListPage() {
                   <th>ক্যাটাগরি</th>
                   <th>দাম</th>
                   <th>স্টক</th>
+                  <th>বিক্রেতা</th>
                   <th>অবস্থা</th>
                   <th>
                     <span className="sr-only">কাজ</span>
@@ -186,14 +171,14 @@ export default function ProductListPage() {
                     </td>
                     <td>{toBn(p.stock)}</td>
                     <td>
+                      {p.owner_name ?? "Supply Mart"}
+                      {p.group_name && <span className="muted small"> · {p.group_name}</span>}
+                    </td>
+                    <td>
                       <span className={p.is_active ? "badge badge-on" : "badge"}>{p.is_active ? "চালু" : "বন্ধ"}</span>
                     </td>
                     <td className="row-actions">
                       <Link to={`/products/${p.id}`}>দেখুন</Link>
-                      <Link to={`/products/${p.id}/edit`}>সম্পাদনা</Link>
-                      <button type="button" className="link-danger" onClick={() => handleDelete(p)}>
-                        মুছুন
-                      </button>
                     </td>
                   </tr>
                 ))}
@@ -201,12 +186,7 @@ export default function ProductListPage() {
             </table>
           </div>
 
-          <Pagination
-            page={page}
-            pageSize={PAGE_SIZE}
-            total={data.total}
-            onChange={(p) => updateParams({ page: p > 1 ? String(p) : "" })}
-          />
+          <Pagination page={page} pageSize={PAGE_SIZE} total={data.total} onChange={(p) => updateParams({ page: p > 1 ? String(p) : "" })} />
         </>
       )}
     </>

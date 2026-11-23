@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Alert from "../components/Alert";
 import ProductForm from "../components/ProductForm";
 import { ApiError, createProduct, getProduct, listCategories, updateProduct } from "../services/api";
-import type { Category, Product, ProductInput } from "../types";
+import { listMyGroups } from "../services/groups";
+import type { Category, Group, Product, ProductInput, ProductPatch } from "../types";
+import ForbiddenPage from "./ForbiddenPage";
 import NotFoundPage from "./NotFoundPage";
 
 // /products/new (নতুন) এবং /products/:id/edit (সম্পাদনা), দুটোই এই পেজ
 export default function ProductFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const editing = id !== undefined;
   const productId = Number(id);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [product, setProduct] = useState<Product | undefined>(undefined);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -33,7 +37,9 @@ export default function ProductFormPage() {
       try {
         const loadedCategories = await listCategories();
         const loadedProduct = editing ? await getProduct(productId) : undefined;
+        const myGroups = editing ? [] : await listMyGroups();
         if (cancelled) return;
+        setGroups(myGroups.filter((g) => g.my_permissions.includes("create"))); // যেখানে পণ্য যোগের অনুমতি আছে
         setCategories(loadedCategories);
         setProduct(loadedProduct);
       } catch (err) {
@@ -56,7 +62,9 @@ export default function ProductFormPage() {
     setError("");
     setServerErrors({});
     try {
-      const saved = editing ? await updateProduct(productId, input) : await createProduct(input);
+      const patch: ProductPatch = { ...input };
+      delete patch.group_id; // গ্রুপ বদলানো যায় না, শুধু নতুন পণ্যে ঠিক হয়
+      const saved = editing ? await updateProduct(productId, patch) : await createProduct(input);
       navigate(`/products/${saved.id}`, {
         state: { flash: editing ? "পণ্য আপডেট হয়েছে" : "নতুন পণ্য যোগ হয়েছে" },
       });
@@ -73,6 +81,7 @@ export default function ProductFormPage() {
 
   if (notFound) return <NotFoundPage />;
   if (loading) return <p className="muted">লোড হচ্ছে...</p>;
+  if (editing && product && !product.can_edit) return <ForbiddenPage />; // UI-র জন্য; সার্ভারও আটকায়
 
   const cancelTo = editing ? `/products/${productId}` : "/products";
 
@@ -93,6 +102,8 @@ export default function ProductFormPage() {
         submitLabel={editing ? "আপডেট করুন" : "পণ্য যোগ করুন"}
         serverErrors={serverErrors}
         cancelTo={cancelTo}
+        groups={groups}
+        defaultGroupId={params.get("group") ?? ""}
         onSubmit={handleSubmit}
       />
     </>
