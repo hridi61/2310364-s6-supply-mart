@@ -4,20 +4,19 @@ CSE309 Web Application & Internet
 # Final Project Submission Report
 
 **Submitted by:**
-Name: [আপনার পুরো নাম]
-Student ID: [IUB ID]
-Section: [Section]
-Team Number: [নির্ধারিত নম্বর, না থাকলে "None"]
+Name: Most. Tanaka Anta Alam
+Student ID: 2310364
+Section: 06
+Team Number: None
 
 Project Title: Supply Mart
 Vercel URL: [https://2310364-s6-supply-mart.vercel.app](https://2310364-s6-supply-mart.vercel.app)
 GitHub Repository: [https://github.com/hridi61/2310364-s6-supply-mart](https://github.com/hridi61/2310364-s6-supply-mart)
 
 **Submitted To:** Sayef Reyadh, Adjunct Lecturer, Department of CSE, Independent University, Bangladesh
-Semester: Autumn 2026 · Date of Submission: [তারিখ]
+Semester: Autumn 2026 · Date of Submission: 28 November 2026
 
 > **নোট:** টেস্ট অ্যাকাউন্টের user ID ও password এই ফাইলে নেই। সেগুলো শুধু PDF রিপোর্টের Appendix-এ আছে।
-> `[...]` চিহ্নিত জায়গা আর S1–S21 স্ক্রিনশট আপনাকে নিজে বসাতে হবে।
 
 ## 1. Executive Summary
 
@@ -40,7 +39,7 @@ Supply Mart is a small online grocery marketplace for Bangladesh. People sign up
 | Vercel frontend | https://2310364-s6-supply-mart.vercel.app |
 | API | https://2310364-s6-supply-mart.vercel.app/api/v1 |
 | API docs | https://2310364-s6-supply-mart.vercel.app/api/docs |
-| Video demo | [ভিডিওর লিংক] |
+| Video demo | TBD |
 
 *Table 1: links*
 
@@ -622,13 +621,12 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 
 | Issue | Pull request | What it delivered |
 |---|---|---|
-| [#N link] JWT authentication | [#N link] | Users, sessions, Argon2 + pepper, access/refresh tokens, profile, password change |
-| [#N link] RBAC and groups | [#N link] | RBAC module, ownership rules, groups with member permissions |
-| [#N link] Admin dashboard | [#N link] | Stats, users, moderation, activity log, security view, CSV |
-| [#N link] Frontend auth, groups and admin | [#N link] | Context, guards, login, profile, groups and admin pages |
-| [#N link] Deploy and docs | [#N link] | Vercel and Supabase setup, demo seed, report |
+| [#1](https://github.com/hridi61/2310364-s6-supply-mart/issues/1), [#3](https://github.com/hridi61/2310364-s6-supply-mart/issues/3) (mid project) | [#2](https://github.com/hridi61/2310364-s6-supply-mart/pull/2), [#8](https://github.com/hridi61/2310364-s6-supply-mart/pull/8) | Mid project: product CRUD and forms |
+| [#9](https://github.com/hridi61/2310364-s6-supply-mart/issues/9) JWT auth, RBAC, groups and admin API | [#12](https://github.com/hridi61/2310364-s6-supply-mart/pull/12) | Users, sessions, Argon2 + pepper, access/refresh tokens, RBAC module, ownership rules, groups with member permissions, admin API, tests |
+| [#10](https://github.com/hridi61/2310364-s6-supply-mart/issues/10) Auth, group and admin UI | [#13](https://github.com/hridi61/2310364-s6-supply-mart/pull/13) | Auth context, route guards, login, signup, profile, home and categories pages, groups and admin pages |
+| [#11](https://github.com/hridi61/2310364-s6-supply-mart/issues/11) Final report and test accounts | this pull request | Final report, viva notes, README with test accounts |
 
-*Table: issues and pull requests. [Fill the links. All commits are from my account hridi61.]*
+*Table: issues and pull requests. All commits are from my account hridi61.*
 
 ### E3. Limitations
 
@@ -638,7 +636,7 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 - Orders and payments are not part of the final scope.
 - Free-tier Supabase can pause when idle; the first request after a pause is slow.
 - The audit log has no retention policy; it grows without limit.
-- [আপনার নিজের জানা বাগ বা অসম্পূর্ণ অংশ এখানে লিখুন]
+- Unbanning a user who is not banned still writes an `unban` event, so repeated clicks add duplicate lines to the activity log (no permission changes).
 
 ### E4. Future Work
 
@@ -660,4 +658,4 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 | Supabase PostgreSQL | https://supabase.com | Hosted database |
 | Vercel | https://vercel.com | Hosting |
 | RFC 7519, OWASP ASVS | — | Design reference |
-| **Claude (Anthropic) — AI assistant** | claude.ai | **[কোন কোন অংশে ব্যবহার করেছেন সত্যি করে লিখুন, যেমন: backend auth/RBAC কোডের প্রথম খসড়া, frontend পেজ, টেস্ট, রিপোর্টের কাঠামো।]** **[আপনি নিজে কী যাচাই করেছেন ও বদলেছেন লিখুন, যেমন: কোড পড়ে বুঝেছি, লোকালে ও Vercel-এ চালিয়ে পরীক্ষা করেছি, … ]** |
+| **Claude (Anthropic) — AI assistant** | claude.ai | Used Claude to draft parts of the backend (authentication, RBAC, groups, admin API), the React pages, the pytest tests, the demo seed and the structure of this report. I set up my own Supabase database and Vercel environment variables, ran the code locally, deployed it, created the demo accounts, and tested login, token refresh, ban, group permissions, the 403 response and CSV export on the live site. I committed and merged the pull requests from my own account. |
