@@ -314,17 +314,17 @@ flowchart LR
 
 | Component | Technology | Version | Reason |
 |---|---|---|---|
-| Frontend | React + TypeScript + Vite | React 19, TS 5.x | Course requirement, typed API data |
-| Routing | React Router (HashRouter) | 7 | Deep links and reloads work on Vercel without extra rewrites |
-| Backend | FastAPI | 0.1xx | Validation, OpenAPI docs, dependency injection for RBAC |
-| ORM | SQLModel | 0.0.x | One class as table and schema |
-| Database | Supabase PostgreSQL (SQLite locally) | — | Persistent hosted data |
-| Password hashing | `pwdlib[argon2]` | 0.2+ | Argon2 is a memory-hard hash |
-| JWT | PyJWT | 2.x | Sign and verify access tokens |
-| Tests | pytest + FastAPI TestClient | — | 21 API tests |
+| Frontend | React + TypeScript + Vite | React 19.3.0, TypeScript 7.0.2, Vite 8.3.2 | Course requirement, typed API data |
+| Routing | React Router (HashRouter) | react-router-dom 7.18.5 | Deep links and reloads work on Vercel without extra rewrites |
+| Backend | FastAPI (Python 3.13.17) | FastAPI 0.162.0 | Validation, OpenAPI docs, dependency injection for RBAC |
+| ORM | SQLModel | 0.0.48 | One class as table and schema |
+| Database | Supabase PostgreSQL (SQLite locally), psycopg driver | psycopg 3.3.6 | Persistent hosted data |
+| Password hashing | `pwdlib[argon2]` | pwdlib 0.4.2 (argon2-cffi 25.1.0) | Argon2 is a memory-hard hash |
+| JWT | PyJWT | 2.15.1 | Sign and verify access tokens |
+| Tests | pytest + FastAPI TestClient | pytest 9.2.0 | 21 API tests |
 | Hosting | Vercel | — | Frontend and API in one project |
 
-*Table 16: technology stack (fill exact versions from `pip freeze` and `package.json`)*
+*Table 16: technology stack. Versions were read from `pip` and `npm ls`; development used Python 3.13.17 and Node.js 24.21.0, uvicorn 0.54.0 runs the API locally.*
 
 ### C2. System Architecture
 
@@ -567,7 +567,7 @@ Automated API tests run with `cd backend && pytest -q` against a temporary SQLit
 | `test_filter_and_sort` | FR-DOM-01 | pass |
 | `test_crud_flow_and_validation` | FR-DOM-03, 04 | pass |
 
-*Table: tests and results. [আপনার নিজের মেশিনে `pytest -q` চালিয়ে ফলাফল মিলিয়ে নিন]*
+*Table: tests and results (`python -m pytest -q`: 21 passed).*
 
 ---
 
@@ -624,7 +624,7 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 | [#1](https://github.com/hridi61/2310364-s6-supply-mart/issues/1), [#3](https://github.com/hridi61/2310364-s6-supply-mart/issues/3) (mid project) | [#2](https://github.com/hridi61/2310364-s6-supply-mart/pull/2), [#8](https://github.com/hridi61/2310364-s6-supply-mart/pull/8) | Mid project: product CRUD and forms |
 | [#9](https://github.com/hridi61/2310364-s6-supply-mart/issues/9) JWT auth, RBAC, groups and admin API | [#12](https://github.com/hridi61/2310364-s6-supply-mart/pull/12) | Users, sessions, Argon2 + pepper, access/refresh tokens, RBAC module, ownership rules, groups with member permissions, admin API, tests |
 | [#10](https://github.com/hridi61/2310364-s6-supply-mart/issues/10) Auth, group and admin UI | [#13](https://github.com/hridi61/2310364-s6-supply-mart/pull/13) | Auth context, route guards, login, signup, profile, home and categories pages, groups and admin pages |
-| [#11](https://github.com/hridi61/2310364-s6-supply-mart/issues/11) Final report and test accounts | this pull request | Final report, viva notes, README with test accounts |
+| [#11](https://github.com/hridi61/2310364-s6-supply-mart/issues/11) Final report and test accounts | [#14](https://github.com/hridi61/2310364-s6-supply-mart/pull/14) | Final report, viva notes, README with test accounts |
 
 *Table: issues and pull requests. All commits are from my account hridi61.*
 
