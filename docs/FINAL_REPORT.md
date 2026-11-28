@@ -873,3 +873,21 @@ This is an individual project and all commits are from my account `hridi61`. The
 | Claude | claude.ai | Used as an assistance tool for planning, explanation, and report drafting; project implementation and claims must be checked by the student against the actual code and deployed application. |
 
 *Table 31: sources, libraries and tools*
+
+---
+
+# Appendix. Test Accounts (demo data only)
+
+These accounts exist only for the instructor and hold demo data. Passwords are not written in the repository; they are in the submission form and the PDF report.
+
+| User ID (email) | Role | Notes |
+|---|---|---|
+| admin1@supplymart.test | admin | |
+| admin2@supplymart.test | admin | |
+| rahim@supplymart.test | user | owner of the group "Mirpur Fresh Mart" |
+| karim@supplymart.test | user | member of the group with `create`, `update` |
+| salma@supplymart.test | user | member of the group with `stock` only |
+
+**Shared group with mixed permissions:** "Mirpur Fresh Mart", owner rahim. Karim may add and edit products, Salma may only change stock, and neither can rename or delete the group or manage members.
+
+**Live links:** frontend https://2310364-s6-supply-mart.vercel.app · API docs https://2310364-s6-supply-mart.vercel.app/api/docs · repository https://github.com/hridi61/2310364-s6-supply-mart
