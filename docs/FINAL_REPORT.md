@@ -120,7 +120,7 @@ Supply Mart is a small online grocery marketplace for Bangladesh. People sign up
 | Vercel frontend | https://2310364-s6-supply-mart.vercel.app |
 | API | https://2310364-s6-supply-mart.vercel.app/api/v1 |
 | API docs | https://2310364-s6-supply-mart.vercel.app/api/docs |
-| Video demo | TBD |
+| Video demo | https://drive.google.com/file/d/12zn1Rd97n4dydB9bsyU2MM554QNeIuTc/view?usp=drivesdk |
 
 *Table 1: links*
 
