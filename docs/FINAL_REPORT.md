@@ -1,22 +1,103 @@
-Independent University, Bangladesh
+Independent University, Bangladesh<br>
 CSE309 Web Application & Internet
 
 # Final Project Submission Report
 
-**Submitted by:**
-Name: Most. Tanaka Anta Alam
-Student ID: 2310364
-Section: 06
+**Submitted by:**<br>
+Name: Most. Tanaka Anta Alam<br>
+Student ID: 2310364<br>
+Section: 06<br>
 Team Number: None
 
-Project Title: Supply Mart
-Vercel URL: [https://2310364-s6-supply-mart.vercel.app](https://2310364-s6-supply-mart.vercel.app)
+Project Title: Supply Mart<br>
+Vercel URL: [https://2310364-s6-supply-mart.vercel.app](https://2310364-s6-supply-mart.vercel.app)<br>
 GitHub Repository: [https://github.com/hridi61/2310364-s6-supply-mart](https://github.com/hridi61/2310364-s6-supply-mart)
 
-**Submitted To:** Sayef Reyadh, Adjunct Lecturer, Department of CSE, Independent University, Bangladesh
-Semester: Autumn 2026 · Date of Submission: 28 November 2026
+**Submitted To:**<br>
+Sayef Reyadh<br>
+Adjunct Lecturer<br>
+Department of Computer Science & Engineering<br>
+Independent University, Bangladesh
 
-> **নোট:** টেস্ট অ্যাকাউন্টের user ID ও password এই ফাইলে নেই। সেগুলো শুধু PDF রিপোর্টের Appendix-এ আছে।
+Semester: Autumn 2026<br>
+Date of Submission: 28 November 2026
+
+## Table of Contents
+
+- [1. Executive Summary](#1-executive-summary)
+  - [1.1 Project overview](#11-project-overview)
+  - [1.2 What was built since the mid assessment](#12-what-was-built-since-the-mid-assessment)
+  - [1.3 Live links](#13-live-links)
+- [Part A. Product Requirements (PRD)](#part-a-product-requirements-prd)
+  - [A1. Problem Statement](#a1-problem-statement)
+  - [A2. Users and Roles](#a2-users-and-roles)
+  - [A3. Goals and Success Measures](#a3-goals-and-success-measures)
+  - [A4. Scope and Non-Goals](#a4-scope-and-non-goals)
+  - [A5. User Stories](#a5-user-stories)
+- [Part B. Software Requirements (SRS)](#part-b-software-requirements-srs)
+  - [B1. Introduction](#b1-introduction)
+  - [B2. Functional Requirements](#b2-functional-requirements)
+  - [B3. Non-Functional Requirements](#b3-non-functional-requirements)
+  - [B4. Roles and Permission Matrix](#b4-roles-and-permission-matrix)
+  - [B5. Use Cases](#b5-use-cases)
+  - [B6. Acceptance Criteria](#b6-acceptance-criteria)
+  - [B7. Traceability Matrix](#b7-traceability-matrix)
+- [Part C. Technical Design (TDD)](#part-c-technical-design-tdd)
+  - [C1. Technology Stack](#c1-technology-stack)
+  - [C2. System Architecture](#c2-system-architecture)
+  - [C3. Backend and Frontend Structure](#c3-backend-and-frontend-structure)
+  - [C4. Data Model](#c4-data-model)
+  - [C5. API Design](#c5-api-design)
+  - [C6. JWT Authentication Design](#c6-jwt-authentication-design)
+  - [C7. RBAC Design](#c7-rbac-design)
+  - [C8. Admin Dashboard Design](#c8-admin-dashboard-design)
+  - [C9. Security Design and Threats](#c9-security-design-and-threats)
+  - [C10. Deployment on Vercel](#c10-deployment-on-vercel)
+  - [C11. Testing](#c11-testing)
+- [Part D. Evidence: Screenshots of the Running Application](#part-d-evidence-screenshots-of-the-running-application)
+  - [D1. User Side](#d1-user-side)
+  - [D2. Security Behaviour](#d2-security-behaviour)
+  - [D3. Admin Dashboard](#d3-admin-dashboard)
+  - [D4. Deployment](#d4-deployment)
+  - [D5. Tests](#d5-tests)
+- [Part E. Project Management and Conclusion](#part-e-project-management-and-conclusion)
+  - [E1. How to Run and Test](#e1-how-to-run-and-test)
+  - [E2. GitHub Work](#e2-github-work)
+  - [E3. Limitations](#e3-limitations)
+  - [E4. Future Work](#e4-future-work)
+  - [E5. Sources, Libraries and Tools](#e5-sources-libraries-and-tools)
+
+## List of Figures and Screenshots
+
+- Figure 1: Use case diagram
+- Figure 2: System architecture
+- Figure 3: Folder trees of the backend and the frontend
+- Figure 4: ER diagram
+- Figure 5: JWT flow (login, request, expiry, refresh, logout)
+- Figure 6: Authorisation flow of one request
+- Figure 7: Admin pages and the endpoints they call
+- Figure 8: Deployment layout
+- S1: Signup with a weak password: validation error
+- S2: The user's own products only
+- S3: Profile: change password with a wrong current password is rejected
+- S4: Sessions list with the revoke action
+- S5: Group page: members and their permissions
+- S6: Action denied by RBAC: message in the app and 403 from the server
+- S7: Expired access token rejected with 401, then refresh and retry
+- S8: Refresh request returns a new token; httpOnly refresh cookie in the Application tab
+- S9: Banned user rejected at login: "Account banned: Demo ban test"
+- S10: Overview statistics
+- S11: Users list with search, filters and pagination
+- S12: User detail with sessions and recent activity
+- S13: A user banned by the admin is shown as "ban" in the users list
+- S14: Content moderation list with search and three items selected for a bulk delete
+- S15: Activity log with filters
+- S16: Security view: failed logins by IP and by account
+- S17: Users CSV export downloaded and opened
+- S18: Vercel production deployment from the main branch
+- S19: Vercel environment variable names (values hidden)
+- S20: Live API documentation page
+- S21: Automated tests: `python -m pytest -q` shows 21 passed
 
 ## 1. Executive Summary
 
@@ -239,14 +320,14 @@ References: RFC 7519 (JWT), OWASP ASVS, FastAPI and SQLModel documentation.
 
 ### B5. Use Cases
 
-| UC | Actor | Main flow | Alternative / error flows | Postcondition |
-|---|---|---|---|---|
-| UC-1 Log in and refresh | User | 1. Enter email and password. 2. API checks lock and password. 3. API returns access token and sets refresh cookie. 4. After 15 min a request returns 401. 5. Frontend calls refresh and repeats the request. | Wrong password: 401. 5 failures: 429. Banned: 403 with reason. Refresh fails: logout. | New session row; `login` logged. |
-| UC-2 Create a record | User | 1. Open "new product". 2. Fill form. 3. API checks `product:write`, validates, saves with `owner_id`. | Not logged in: 401. Invalid input: 422. Group without `create`: 403. | Product owned by caller. |
-| UC-3 Change a member's permissions | Group owner | 1. Open group. 2. Tick/untick permissions for a member. 3. API checks caller is owner and saves. | Non-owner: 403. Non-member: 404. Unknown permission: 422. | Member's rights changed at once. |
-| UC-4 A denied action | Group member with `stock` | 1. Open a group product. 2. Try to change its price. | API returns 403; UI only offers the stock box. | Product unchanged. |
-| UC-5 Ban a user | Admin | 1. Open user detail. 2. Enter reason, click ban. 3. API refuses admins, sets ban, revokes sessions, logs `ban`. | Target is admin: 403. Reason too short: 422. | Next request of the banned user returns 403. |
-| UC-6 Read the audit log | Admin | 1. Open activity log. 2. Filter by event or search an email/IP. 3. Export CSV (logged as `export`). | Not admin: 403. | Events visible with IP, browser, time. |
+| UC | Actor | Preconditions | Main flow | Alternative / error flows | Postcondition |
+|---|---|---|---|---|---|
+| UC-1 Log in and refresh | User | The user has an account, is not banned and is not locked. | 1. Enter email and password. 2. API checks lock and password. 3. API returns access token and sets refresh cookie. 4. After 15 min a request returns 401. 5. Frontend calls refresh and repeats the request. | Wrong password: 401. 5 failures: 429. Banned: 403 with reason. Refresh fails: logout. | New session row; `login` logged. |
+| UC-2 Create a record | User | The user is logged in. | 1. Open "new product". 2. Fill form. 3. API checks `product:write`, validates, saves with `owner_id`. | Not logged in: 401. Invalid input: 422. Group without `create`: 403. | Product owned by caller. |
+| UC-3 Change a member's permissions | Group owner | The caller owns the group and the member is already in it. | 1. Open group. 2. Tick/untick permissions for a member. 3. API checks caller is owner and saves. | Non-owner: 403. Non-member: 404. Unknown permission: 422. | Member's rights changed at once. |
+| UC-4 A denied action | Group member with `stock` | The caller is a member of the group with only the `stock` permission. | 1. Open a group product. 2. Try to change its price. | API returns 403; UI only offers the stock box. | Product unchanged. |
+| UC-5 Ban a user | Admin | The caller is an admin; the target is a normal user. | 1. Open user detail. 2. Enter reason, click ban. 3. API refuses admins, sets ban, revokes sessions, logs `ban`. | Target is admin: 403. Reason too short: 422. | Next request of the banned user returns 403. |
+| UC-6 Read the audit log | Admin | The caller is an admin. | 1. Open activity log. 2. Filter by event or search an email/IP. 3. Export CSV (logged as `export`). | Not admin: 403. | Events visible with IP, browser, time. |
 
 ```mermaid
 flowchart LR
@@ -367,6 +448,8 @@ frontend/src/
   pages/                   product, login, signup, profile, groups pages; pages/admin/*
   types/, utils/
 ```
+*Figure 3: folder trees of the backend and the frontend*
+
 Routers parse the request and call a service; dependencies do the reusable checks (token, role); services hold the business rules (ownership, group permissions, ban rules) and know nothing about HTTP.
 
 ### C4. Data Model
@@ -382,50 +465,142 @@ erDiagram
   CATEGORY ||--o{ PRODUCT : groups
   APP_USER ||--o{ AUDIT_LOG : causes
 ```
-*Figure 3: ER diagram*
+*Figure 4: ER diagram*
 
-| Table | Columns (key points) |
-|---|---|
-| `app_user` | id, email (unique, lowercase), name, phone, password_hash (Argon2), role (`user`/`admin`), is_banned, ban_reason, banned_at, failed_login_count, locked_until, last_login_at, created_at, updated_at |
-| `auth_session` | id, user_id → app_user, token_hash (SHA-256, unique), prev_token_hash (to detect reuse), ip, user_agent, created_at, last_used_at, expires_at, revoked_at |
-| `product` | id, category_id, name_bn, unit, price, stock, icon, is_active, **owner_id** → app_user (null = platform), **group_id** → shop_group, created_at, updated_at |
-| `shop_group` | id, name, description, owner_id → app_user, created_at |
-| `group_member` | id, group_id, user_id, permissions (`create,update,stock` subset); unique (group_id, user_id) |
-| `audit_log` | id, user_id, email, action, detail, ip, user_agent, created_at (indexed by action, ip, email, time) |
-| `category` | id, slug (unique), name_bn, icon |
+*Table 17: `app_user`*
 
-*Tables 17–23.* Roles are a column on `app_user`. A ban is `is_banned` with a reason. A login is an `auth_session` row; revoking sets `revoked_at`. Group rights are a comma list on `group_member`; the owner's rights are implied by `shop_group.owner_id`. Because `create_all` does not alter old tables, `migrate.py` adds `owner_id` and `group_id` to the existing `product` table at start-up.
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| email | varchar(254) | unique, not null | yes | stored in lowercase |
+| name | varchar(100) | not null | | |
+| phone | varchar(20) | null | | Bangladesh mobile format |
+| password_hash | varchar(255) | not null | | Argon2 hash of the peppered password |
+| role | varchar(10) | not null, default `user` | yes | `user` or `admin` |
+| is_banned | boolean | default false | | |
+| ban_reason | varchar(300) | null | | required when banning |
+| banned_at | timestamp | null | | |
+| failed_login_count | integer | default 0 | | reset on a good login |
+| locked_until | timestamp | null | | set after 5 failures |
+| last_login_at | timestamp | null | | |
+| created_at, updated_at | timestamp | not null | | UTC |
+
+*Table 18: `auth_session`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| user_id | integer | foreign key → app_user.id | yes | |
+| token_hash | varchar(64) | unique, not null | yes | SHA-256 of the refresh token |
+| prev_token_hash | varchar(64) | null | yes | the previous token, to detect reuse |
+| ip | varchar(64) | null | | |
+| user_agent | varchar(300) | null | | |
+| created_at, last_used_at | timestamp | not null | | |
+| expires_at | timestamp | not null | | 7 days after the last refresh |
+| revoked_at | timestamp | null | | set by logout, ban, reuse or revoke |
+
+*Table 19: `category`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| slug | varchar(40) | unique, not null | yes | |
+| name_bn | varchar(60) | not null | | |
+| icon | varchar(8) | not null | | emoji |
+
+*Table 20: `product`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| category_id | integer | foreign key → category.id, not null | yes | |
+| name_bn | varchar(60) | not null | | |
+| unit | varchar(10) | not null | | kg, piece, litre, dozen |
+| price | integer | not null, 1 to 100000 | | whole taka, no decimals |
+| stock | integer | default 0, 0 to 10000 | | |
+| icon | varchar(8) | null | | falls back to the category icon |
+| is_active | boolean | default true | | |
+| owner_id | integer | foreign key → app_user.id, null | yes | null = platform product |
+| group_id | integer | foreign key → shop_group.id, null | yes | set when the product belongs to a group |
+| created_at, updated_at | timestamp | not null | | |
+
+*Table 21: `shop_group`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| name | varchar(60) | not null | | |
+| description | varchar(200) | null | | |
+| owner_id | integer | foreign key → app_user.id, not null | yes | the group owner |
+| created_at | timestamp | not null | | |
+
+*Table 22: `group_member`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| group_id | integer | foreign key → shop_group.id, not null | yes | |
+| user_id | integer | foreign key → app_user.id, not null | yes | |
+| permissions | varchar(60) | default empty | | comma list, a subset of `create,update,stock` |
+| | | unique (group_id, user_id) | | `uq_group_user`: one row per member |
+
+*Table 23: `audit_log`*
+
+| Column | Type | Key / constraint | Index | Note |
+|---|---|---|---|---|
+| id | integer | primary key | yes | |
+| user_id | integer | foreign key → app_user.id, null | yes | null for unknown emails |
+| email | varchar(254) | null | yes | |
+| action | varchar(30) | not null | yes | login, login_failed, ban, ... |
+| detail | varchar(300) | null | | |
+| ip | varchar(64) | null | yes | |
+| user_agent | varchar(300) | null | | browser |
+| created_at | timestamp | not null | yes | |
+
+**How the main ideas are stored.** The role is a column on `app_user`. A ban is `is_banned` with a reason and a time. A login is an `auth_session` row; the refresh token itself is never stored, only its SHA-256 hash, and revoking sets `revoked_at`. Group membership with permissions is a `group_member` row; the group owner's rights are implied by `shop_group.owner_id`, so the owner needs no member row. Every security event is one `audit_log` row. Because `create_all` does not alter old tables, `migrate.py` adds `owner_id` and `group_id` to the existing `product` table at start-up.
 
 ### C5. API Design
 
-Base path `/api/v1`. Errors use FastAPI's format `{"detail": "..."}`; validation errors (422) list the failing fields.
+Base path `/api/v1`. Errors use FastAPI's format `{"detail": "..."}`; validation errors (422) list the failing fields. `?` after a field means optional.
 
-| Method + path | Auth | Role / permission | Success | Errors |
-|---|---|---|---|---|
-| `POST /auth/signup` | public | — | 201 | 409, 422 |
-| `POST /auth/login` | public | — | 200 + cookie | 401, 403 (banned), 429 |
-| `POST /auth/refresh` | cookie | — | 200 + new cookie | 401 |
-| `POST /auth/logout` | cookie | — | 204 | — |
-| `GET /auth/sessions`, `DELETE /auth/sessions/{id}` | token | `session:manage` | 200 / 204 | 401, 404 |
-| `GET/PATCH /users/me`, `POST /users/me/password` | token | `profile:manage` | 200 / 204 | 400, 401, 422 |
-| `GET /categories`, `GET /products`, `GET /products/{id}` | public | — | 200 | 404, 422 |
-| `GET /products/mine` | token | `product:write` | 200 | 401 |
-| `POST /products` | token | `product:write` (+ group `create`) | 201 | 401, 403, 422 |
-| `PATCH /products/{id}` | token | owner / group `update` or `stock` | 200 | 401, 403, 404, 422 |
-| `DELETE /products/{id}` | token | owner / group owner | 204 | 401, 403, 404 |
-| `POST/GET /groups`, `GET /groups/{id}` | token | `group:create`; member for detail | 201 / 200 | 401, 404 |
-| `PATCH/DELETE /groups/{id}` | token | group owner | 200 / 204 | 403, 404 |
-| `POST/PATCH/DELETE /groups/{id}/members[/{uid}]` | token | group owner | 201 / 200 / 204 | 403, 404, 409, 422 |
-| `GET /admin/stats` | token | `admin:stats` | 200 | 401, 403 |
-| `GET /admin/users`, `GET /admin/users/{id}` | token | `admin:users:read` | 200 | 403, 404 |
-| `POST /admin/users/{id}/ban`, `/unban`, `/revoke-sessions`, `POST /admin/users/bulk` | token | `admin:users:ban` | 200 | 403, 404, 422 |
-| `PATCH /admin/users/{id}/role` | token | `admin:users:role` | 200 | 403, 404 |
-| `GET /admin/products`, `GET /admin/groups`, `DELETE`, `POST …/bulk-delete` | token | `admin:content` | 200 / 204 | 403, 404 |
-| `GET /admin/activity`, `GET /admin/security` | token | `admin:activity` | 200 | 403 |
-| `GET /admin/export/{users,products,activity}` | token | `admin:export` | 200 CSV | 403 |
-| `GET /api/health`, `/api/docs` | public | — | 200 | — |
+| Method + path | Auth | Role / permission | Request body | Success | Errors |
+|---|---|---|---|---|---|
+| `POST /auth/signup` | public | — | email, name, password | 201 | 409, 422 |
+| `POST /auth/login` | public | — | email, password | 200 + cookie | 401, 403 (banned), 429 |
+| `POST /auth/refresh` | cookie | — | none (refresh cookie) | 200 + new cookie | 401 |
+| `POST /auth/logout` | cookie | — | none | 204 | — |
+| `GET /auth/sessions` | token | `session:manage` | — | 200 | 401 |
+| `DELETE /auth/sessions/{id}` | token | `session:manage` | — | 204 | 401, 404 |
+| `GET /users/me` | token | `profile:manage` | — | 200 | 401 |
+| `PATCH /users/me` | token | `profile:manage` | name?, phone? | 200 | 401, 422 |
+| `POST /users/me/password` | token | `profile:manage` | current_password, new_password | 204 | 400, 401, 422 |
+| `GET /categories`, `GET /products`, `GET /products/{id}` | public | — | query: filters, sort, offset, limit | 200 | 404, 422 |
+| `GET /products/mine` | token | `product:write` | query: offset, limit | 200 | 401 |
+| `POST /products` | token | `product:write` (+ group `create`) | name_bn, category_id, unit, price, stock, icon?, group_id? | 201 | 401, 403, 422 |
+| `PATCH /products/{id}` | token | owner, or group `update` / `stock` | any of name_bn, category_id, unit, price, stock, icon, is_active | 200 | 401, 403, 404, 422 |
+| `DELETE /products/{id}` | token | owner, or group owner | — | 204 | 401, 403, 404 |
+| `POST /groups` | token | `group:create` | name, description? | 201 | 401, 422 |
+| `GET /groups`, `GET /groups/{id}` | token | member of the group | — | 200 | 401, 404 |
+| `PATCH /groups/{id}` | token | group owner | name?, description? | 200 | 403, 404, 422 |
+| `DELETE /groups/{id}` | token | group owner | — | 204 | 403, 404 |
+| `POST /groups/{id}/members` | token | group owner | email, permissions[] | 201 | 403, 404, 409, 422 |
+| `PATCH /groups/{id}/members/{uid}` | token | group owner | permissions[] | 200 | 403, 404, 422 |
+| `DELETE /groups/{id}/members/{uid}` | token | group owner | — | 204 | 403, 404 |
+| `GET /admin/stats` | token | `admin:stats` | — | 200 | 401, 403 |
+| `GET /admin/users` | token | `admin:users:read` | query: search, role, status, offset, limit | 200 | 403 |
+| `GET /admin/users/{id}` | token | `admin:users:read` | — | 200 | 403, 404 |
+| `POST /admin/users/{id}/ban` | token | `admin:users:ban` | reason (3 to 300 characters) | 200 | 403, 404, 422 |
+| `POST /admin/users/{id}/unban`, `/revoke-sessions` | token | `admin:users:ban` | — | 200 | 403, 404 |
+| `POST /admin/users/bulk` | token | `admin:users:ban` | action (ban or unban), ids[], reason? | 200 | 403, 422 |
+| `PATCH /admin/users/{id}/role` | token | `admin:users:role` | role (user or admin) | 200 | 403, 404, 422 |
+| `GET /admin/products`, `GET /admin/groups` | token | `admin:content` | query: search, offset, limit | 200 | 403 |
+| `DELETE /admin/products/{id}`, `DELETE /admin/groups/{id}` | token | `admin:content` | — | 204 | 403, 404 |
+| `POST /admin/products/bulk-delete`, `POST /admin/groups/bulk-delete` | token | `admin:content` | ids[] | 200 | 403, 422 |
+| `GET /admin/activity`, `GET /admin/security` | token | `admin:activity` | query: event, search, days, offset, limit | 200 | 403 |
+| `GET /admin/export/{users,products,activity}` | token | `admin:export` | the same query as the list | 200 CSV | 403 |
+| `GET /api/health`, `GET /api/docs` | public | — | — | 200 | — |
 
-*Table: endpoint list*
+*Table 24: endpoint list*
 
 ### C6. JWT Authentication Design
 
@@ -453,7 +628,7 @@ sequenceDiagram
   A->>D: revoked_at = now
   Note over A: an old refresh token sent again → 401, session revoked, token_reuse logged
 ```
-*Figure 4: JWT flow*
+*Figure 5: JWT flow*
 
 | Claim | Meaning |
 |---|---|
@@ -462,7 +637,7 @@ sequenceDiagram
 | `iat`, `exp` | issued at, expiry (+15 min) |
 | `jti` | unique token id |
 
-*Table: token claims.* HS256 with `JWT_SECRET` (≥ 32 bytes, environment variable); the decoder pins the algorithm list so a token cannot pick its own algorithm. **Lifetimes:** access 15 minutes (a stolen token is useful only briefly), refresh 7 days (user does not log in daily). **Storage:** the access token lives only in JavaScript memory (not localStorage), which makes theft through XSS harder; the refresh token is an httpOnly cookie, SameSite=Strict, `Path=/api/v1/auth`, `Secure` on Vercel, so scripts cannot read it and other sites cannot send it (CSRF). **Every request:** signature, expiry, user exists, user not banned. **Frontend on 401:** one silent refresh (shared by parallel requests), repeat the request, otherwise log out.
+*Table 25: token claims.* HS256 with `JWT_SECRET` (≥ 32 bytes, environment variable); the decoder pins the algorithm list so a token cannot pick its own algorithm. **Lifetimes:** access 15 minutes (a stolen token is useful only briefly), refresh 7 days (user does not log in daily). **Storage:** the access token lives only in JavaScript memory (not localStorage), which makes theft through XSS harder; the refresh token is an httpOnly cookie, SameSite=Strict, `Path=/api/v1/auth`, `Secure` on Vercel, so scripts cannot read it and other sites cannot send it (CSRF). **Every request:** signature, expiry, user exists, user not banned. **Frontend on 401:** one silent refresh (shared by parallel requests), repeat the request, otherwise log out.
 
 ### C7. RBAC Design
 
@@ -479,7 +654,7 @@ flowchart TD
   O -- no --> E403c[403 or 404]
   O -- yes --> H[Handler runs]
 ```
-*Figure 5: authorisation flow.* Permissions are constants in `rbac_constants.py`; `ROLE_PERMISSIONS` maps `user` and `admin` to sets. The reusable check:
+*Figure 6: authorisation flow.* Permissions are constants in `rbac_constants.py`; `ROLE_PERMISSIONS` maps `user` and `admin` to sets. The reusable check:
 
 ```python
 def require(permission: str):
@@ -489,9 +664,29 @@ def require(permission: str):
         return user
     return Depends(checker)
 ```
-Used as `user: Annotated[User, require(P.ADMIN_USERS_BAN)]`. **Ownership** is checked in `catalog/service.py` (`can_update`, `can_delete`) and group rights in `rbac.group_permissions()`; a non-member gets 404 for a group. **New permission:** add a constant to `P`, put it in the role sets and use `require(P.NEW)` on the endpoint. **Special rules:** `change_role` refuses the caller's own id; `ban_user` refuses any admin; `get_current_user` returns 403 for a banned user on every request.
+*Code excerpt: the reusable permission check (`app/rbac.py`)*
+
+Used as `user: Annotated[User, require(P.ADMIN_USERS_BAN)]`. **Ownership** is enforced in the query for lists (`GET /products/mine` filters on `Product.owner_id == user.id`, so other users' rows are never loaded) and checked in `catalog/service.py` (`can_update`, `can_delete`) for changes; group rights in `rbac.group_permissions()`; a non-member gets 404 for a group. **New permission:** add a constant to `P`, put it in the role sets and use `require(P.NEW)` on the endpoint. **Special rules:** `change_role` refuses the caller's own id; `ban_user` refuses any admin; `get_current_user` returns 403 for a banned user on every request.
 
 ### C8. Admin Dashboard Design
+
+```mermaid
+flowchart LR
+  A1["Overview"] --> E1["GET /admin/stats"]
+  A2["Users"] --> E2["GET /admin/users<br/>POST /admin/users/bulk<br/>GET /admin/export/users"]
+  A3["User detail"] --> E3["GET /admin/users/id<br/>ban, unban, revoke-sessions<br/>PATCH role"]
+  A4["Content"] --> E4["GET /admin/products, /admin/groups<br/>DELETE and bulk-delete<br/>GET /admin/export/products"]
+  A5["Activity log"] --> E5["GET /admin/activity<br/>GET /admin/export/activity"]
+  A6["Security"] --> E6["GET /admin/security"]
+  E1 --> P{"require(P.ADMIN_...)"}
+  E2 --> P
+  E3 --> P
+  E4 --> P
+  E5 --> P
+  E6 --> P
+  P --> S["admin/service.py"] --> L[("audit_log")]
+```
+*Figure 7: admin pages and the endpoints they call*
 
 | Page | Endpoints | Filters / pagination | Actions | Audit events |
 |---|---|---|---|---|
@@ -502,7 +697,7 @@ Used as `user: Annotated[User, require(P.ADMIN_USERS_BAN)]`. **Ownership** is ch
 | Activity log | `GET /admin/activity`, export | event, search (email/IP/detail), page 15 | CSV | `export` |
 | Security | `GET /admin/security` | 1, 7 or 30 days | — | — |
 
-*Table: admin pages.* Bulk ban/unban returns `{done: [...], skipped: [{id, reason}]}` and the page shows both counts. CSV export uses the same query builder as the list, so filters apply, caps at 5 000 rows, and prefixes cells starting with `=`, `+`, `-`, `@` with `'`.
+*Table 26: admin pages.* Bulk ban/unban returns `{done: [...], skipped: [{id, reason}]}` and the page shows both counts. CSV export uses the same query builder as the list, so filters apply, caps at 5 000 rows, and prefixes cells starting with `=`, `+`, `-`, `@` with `'`.
 
 ### C9. Security Design and Threats
 
@@ -523,21 +718,36 @@ Used as `user: Annotated[User, require(P.ADMIN_USERS_BAN)]`. **Ownership** is ch
 | Account enumeration | Same 401 message and constant-time dummy hash | `auth/service.py` |
 | CSV formula injection | Cells prefixed with `'` | `admin/service.py` |
 
-*Table: threats and defences*
+*Table 27: threats and defences*
 
 ### C10. Deployment on Vercel
 
+```mermaid
+flowchart LR
+  G["GitHub repository<br/>main branch"] -- "push or merge" --> V["Vercel build"]
+  V --> F["Frontend<br/>static files (dist)"]
+  V --> B["API<br/>FastAPI serverless function"]
+  U["Browser"] --> F
+  U -- "/api/v1/*" --> B
+  B --> D[("Supabase PostgreSQL")]
+  ENV["Vercel environment variables<br/>DATABASE_URL, JWT_SECRET,<br/>PEPPER, CORS_ORIGINS"] -.-> B
+```
+*Figure 8: deployment layout*
+
+**Build settings.** Frontend: `npm install` and `npm run build` (`tsc && vite build`), static output in `frontend/dist`. Backend: Vercel installs the Python packages from `backend/requirements.txt` and runs the FastAPI app `main:app` as a serverless function. **How the frontend finds the API:** it calls the relative base path `/api/v1` (`BASE` in `services/http.ts`), so no host name or localhost address is stored in the code. **Database:** Supabase PostgreSQL through the transaction pooler URL.
+
 The repository is connected to one Vercel project; `vercel.json` defines two services: `backend` (root `backend`, FastAPI, entrypoint `main:app`) and `frontend` (root `frontend`, Vite), with rewrites `/api/*` → backend and everything else → frontend. The frontend calls the API with relative URLs (same origin), so no localhost address is used and CORS is not needed in production (it is still limited to the listed origin). A push to `main` redeploys; to redeploy by hand use Deployments → Redeploy.
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Supabase transaction pooler URL |
-| `JWT_SECRET` | signs access tokens (≥ 32 chars) |
-| `PEPPER` | secret mixed into password hashes |
-| `CORS_ORIGINS` | allowed frontend origin(s) |
-| `ACCESS_TOKEN_MINUTES`, `REFRESH_TOKEN_DAYS`, `REUSE_GRACE_SECONDS`, `COOKIE_SECURE` | optional tuning |
+| Variable | Purpose | Example value (placeholder) |
+|---|---|---|
+| `DATABASE_URL` | Supabase transaction pooler URL | `postgresql://USER:PASSWORD@HOST:6543/postgres` |
+| `JWT_SECRET` | signs access tokens (≥ 32 chars) | `<random string of 32 or more characters>` |
+| `PEPPER` | secret mixed into password hashes | `<another random secret>` |
+| `CORS_ORIGINS` | allowed frontend origin(s) | `https://<your-app>.vercel.app` |
+| `ACCESS_TOKEN_MINUTES`, `REFRESH_TOKEN_DAYS`, `REUSE_GRACE_SECONDS`, `COOKIE_SECURE` | optional tuning | `15`, `7`, `10`, `true` |
+| `DEMO_PASSWORD` | password for the demo accounts, used only by the seed script on a developer machine | `<choose-one>` |
 
-*Table: environment variable names (values are not in the repository).* Demo accounts are created once from a developer machine with `python -m app.seed_demo` (reads `DEMO_PASSWORD` from the environment).
+*Table 28: environment variable names with placeholder values (real values are not in the repository).* Demo accounts are created once from a developer machine with `python -m app.seed_demo` (reads `DEMO_PASSWORD` from the environment).
 
 ### C11. Testing
 
@@ -567,7 +777,7 @@ Automated API tests run with `cd backend && pytest -q` against a temporary SQLit
 | `test_filter_and_sort` | FR-DOM-01 | pass |
 | `test_crud_flow_and_validation` | FR-DOM-03, 04 | pass |
 
-*Table: tests and results (`python -m pytest -q`: 21 passed).*
+*Table 29: tests and results (`python -m pytest -q`: 21 passed).*
 
 ---
 
@@ -615,7 +825,7 @@ pytest -q
 # frontend (second terminal)
 cd frontend && npm install && npm run dev      # http://localhost:5173
 ```
-Environment variables (set in the shell or on Vercel; the app does not read a `.env` file by itself): see `.env.example` (`DATABASE_URL`, `JWT_SECRET`, `PEPPER`, `CORS_ORIGINS`). Test accounts: two admins and three users; their IDs and passwords are in the PDF report (Appendix).
+Environment variables (set in the shell or on Vercel; the app does not read a `.env` file by itself): see `.env.example` and Table 28 (names, purposes and example values: `DATABASE_URL`, `JWT_SECRET`, `PEPPER`, `CORS_ORIGINS`). Test accounts: two admins and three users; their IDs and passwords are in the PDF report (Appendix).
 
 ### E2. GitHub Work
 
@@ -626,7 +836,9 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 | [#10](https://github.com/hridi61/2310364-s6-supply-mart/issues/10) Auth, group and admin UI | [#13](https://github.com/hridi61/2310364-s6-supply-mart/pull/13) | Auth context, route guards, login, signup, profile, home and categories pages, groups and admin pages |
 | [#11](https://github.com/hridi61/2310364-s6-supply-mart/issues/11) Final report and test accounts | [#14](https://github.com/hridi61/2310364-s6-supply-mart/pull/14) | Final report, viva notes, README with test accounts |
 
-*Table: issues and pull requests. All commits are from my account hridi61.*
+*Table 30: issues and pull requests.*
+
+This is an individual project and all commits are from my account `hridi61`. The work was done in two phases: the mid project (8 October to 3 November: product list, forms, API client, first deployment), then the final extension, with the backend in pull request #12, the frontend in #13 and the documentation in #14 (23 and 24 November), followed by small documentation updates after testing on the live site.
 
 ### E3. Limitations
 
@@ -658,4 +870,6 @@ Environment variables (set in the shell or on Vercel; the app does not read a `.
 | Supabase PostgreSQL | https://supabase.com | Hosted database |
 | Vercel | https://vercel.com | Hosting |
 | RFC 7519, OWASP ASVS | — | Design reference |
-| **Claude (Anthropic) — AI assistant** | claude.ai | Used Claude to draft parts of the backend (authentication, RBAC, groups, admin API), the React pages, the pytest tests, the demo seed and the structure of this report. I set up my own Supabase database and Vercel environment variables, ran the code locally, deployed it, created the demo accounts, and tested login, token refresh, ban, group permissions, the 403 response and CSV export on the live site. I committed and merged the pull requests from my own account. |
+| Claude | claude.ai | Used as an assistance tool for planning, explanation, and report drafting; project implementation and claims must be checked by the student against the actual code and deployed application. |
+
+*Table 31: sources, libraries and tools*
